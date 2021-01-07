@@ -101,11 +101,8 @@ def get_word_score(word, n):
     if len(word) < 1:
         score = 0
     return score
-        
     
     
-    
-
 #
 # Make sure you understand how this function works and what it does!
 #
@@ -179,8 +176,12 @@ def update_hand(hand, word):
     hand: dictionary (string -> int)    
     returns: dictionary (string -> int)
     """
-
-    pass  # TO DO... Remove this line when you implement this function
+    for char in word :
+        hand[char] = hand.get(char, 0) - 1
+        if hand[char] is 0 :
+            del(hand[char])
+            
+    return hand
 
 #
 # Problem #3: Test word validity

@@ -25,7 +25,7 @@ def test_get_word_score():
 
 # end of test_get_word_score
 
-'''
+
 def test_update_hand():
     """
     Unit test for update_hand
@@ -34,11 +34,13 @@ def test_update_hand():
     handOrig = {'a':1, 'q':1, 'l':2, 'm':1, 'u':1, 'i':1}
     handCopy = handOrig.copy()
     word = "quail"
-
+    print(handCopy)
     hand2 = update_hand(handCopy, word)
     expected_hand1 = {'l':1, 'm':1}
     expected_hand2 = {'a':0, 'q':0, 'l':1, 'm':1, 'u':0, 'i':0}
-    if hand2 != expected_hand1 and hand2 != expected_hand2:
+    print(hand2)
+    print(handCopy)
+    if hand2 != expected_hand1: #or hand2 != expected_hand2:
         print("FAILURE: test_update_hand('"+ word +"', " + str(handOrig) + ")")
         print("\tReturned: ", hand2, "\n\t-- but expected:", expected_hand1, "or", expected_hand2)
 
@@ -59,7 +61,7 @@ def test_update_hand():
     hand2 = update_hand(handCopy, word)
     expected_hand1 = {'v':1, 'n':1, 'l':1}
     expected_hand2 = {'e':0, 'v':1, 'n':1, 'i':0, 'l':1}
-    if hand2 != expected_hand1 and hand2 != expected_hand2:
+    if hand2 != expected_hand1 or hand2 != expected_hand2:
         print("FAILURE: test_update_hand('"+ word +"', " + str(handOrig) + ")")        
         print("\tReturned: ", hand2, "\n\t-- but expected:", expected_hand1, "or", expected_hand2)
 
@@ -81,7 +83,7 @@ def test_update_hand():
     hand2 = update_hand(handCopy, word)
     expected_hand1 = {}
     expected_hand2 = {'h': 0, 'e': 0, 'l': 0, 'o': 0}
-    if hand2 != expected_hand1 and hand2 != expected_hand2:
+    if hand2 != expected_hand1 or hand2 != expected_hand2:
         print("FAILURE: test_update_hand('"+ word +"', " + str(handOrig) + ")")                
         print("\tReturned: ", hand2, "\n\t-- but expected:", expected_hand1, "or", expected_hand2)
         
@@ -247,15 +249,15 @@ def test_wildcard(word_list):
     if not failure:
         print("SUCCESS: test_wildcard()")
 
-'''
+
 word_list = load_words()
 print("----------------------------------------------------------------------")
 print("Testing get_word_score...")
 test_get_word_score()
 print("----------------------------------------------------------------------")
-#print("Testing update_hand...")
-#test_update_hand()
-#print("----------------------------------------------------------------------")
+print("Testing update_hand...")
+test_update_hand()
+print("----------------------------------------------------------------------")
 #print("Testing is_valid_word...")
 #test_is_valid_word(word_list)
 #print("----------------------------------------------------------------------")
