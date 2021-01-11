@@ -153,7 +153,7 @@ def deal_hand(n):
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
     
-    hand["*"] = hand.get("*") + 1
+    hand["*"] = hand.get("*", 0) + 1
     return hand
 
 #
@@ -396,7 +396,8 @@ def play_game(word_list):
 # when the program is run directly, instead of through an import statement
 #
 if __name__ == '__main__':
+    n = 7
     word_list = load_words()
-    hand = {'c': 1, 'o': 1, '*': 1, 'w': 1, 's':1, 'z':1, 'y': 2}
+    hand = deal_hand(n)
     play_hand(hand, word_list)
     #play_game(word_list)
