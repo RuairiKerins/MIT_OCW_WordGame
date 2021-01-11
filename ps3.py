@@ -158,6 +158,7 @@ def deal_hand(n):
 #
 # Problem #2: Update a hand by removing letters
 #
+
 def update_hand(hand, word):
     """
     Does NOT assume that hand contains every letter in word at least as
@@ -178,7 +179,6 @@ def update_hand(hand, word):
     """   
     handcopy = hand.copy()
     for char in word :
-        
         char = str.lower(char)
         handcopy[char] = handcopy.get(char, 0) - 1
         if handcopy[char] is 0 :
@@ -200,8 +200,15 @@ def is_valid_word(word, hand, word_list):
     word_list: list of lowercase strings
     returns: boolean
     """
-
-    pass  # TO DO... Remove this line when you implement this function
+    word = word.lower()
+    print(word)
+    if word in word_list:
+        hand = update_hand(hand, word)
+        for value in hand.values():
+            if value < 0:
+                return False
+        else:
+            return True
 
 #
 # Problem #5: Playing a hand
