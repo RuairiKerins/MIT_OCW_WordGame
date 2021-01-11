@@ -143,8 +143,8 @@ def deal_hand(n):
     """
     
     hand={}
-    num_vowels = int(math.ceil(n / 3))
-
+    num_vowels = int(math.ceil((n / 3)-1))
+    
     for i in range(num_vowels):
         x = random.choice(VOWELS)
         hand[x] = hand.get(x, 0) + 1
@@ -153,6 +153,7 @@ def deal_hand(n):
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
     
+    hand["*"] = hand.get("*") + 1
     return hand
 
 #
@@ -227,6 +228,11 @@ def calculate_handlen(hand):
     hand: dictionary (string-> int)
     returns: integer
     """
+    length = 0
+    for value in hand.values():
+        length = length + value
+    return length
+
     
     pass  # TO DO... Remove this line when you implement this function
 
@@ -260,7 +266,7 @@ def play_hand(hand, word_list):
       returns: the total score for the hand
       
     """
-    
+
     # BEGIN PSEUDOCODE <-- Remove this comment when you implement this function
     # Keep track of the total score
     
@@ -293,7 +299,26 @@ def play_hand(hand, word_list):
 
     # Return the total score as result of function
 
-
+    score = 0
+    while calculate_handlen(hand) > 0:
+        n = calculate_handlen(hand)
+        display_hand(hand)
+        escape = '!'            #doesn't seem to work for "!!" but does work for "!"
+        word = (input("Enter word, or '!' to indicate that you are finished: "))
+        print(word)
+        if word is escape :
+            print("Total score: ", score, "points")
+            return score
+        else:
+            if is_valid_word(word, hand, word_list):
+                score = score + get_word_score(word, n)
+                print(word, "earned ", get_word_score(word,n), "Total: ", score, "points")
+                hand = update_hand(hand, word)
+            else:
+                print("That is not a valid word. Please choose another word.")
+                hand = update_hand(hand, word)
+    print("Ran out of letters. Total score: ", score, "points")
+    return score
 
 #
 # Problem #6: Playing a game
@@ -372,4 +397,6 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
-    play_game(word_list)
+    hand = {'c': 1, 'o': 1, '*': 1, 'w': 1, 's':1, 'z':1, 'y': 2}
+    play_hand(hand, word_list)
+    #play_game(word_list)
