@@ -1,4 +1,3 @@
-
 # 6.0001 Problem Set 3
 #
 # The 6.0001 Word Game
@@ -14,7 +13,7 @@ import string
 
 VOWELS = 'aeiou'
 CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
-HAND_SIZE = 7
+HAND_SIZE = 12
 
 SCRABBLE_LETTER_VALUES = {
    "*": 0, 'a': 1, 'b': 3, 'c': 3, 'd': 2, 'e': 1, 'f': 4, 'g': 2, 'h': 4, 'i': 1, 'j': 8, 'k': 5, 'l': 1, 'm': 3, 'n': 1, 'o': 1, 'p': 3, 'q': 10, 'r': 1, 's': 1, 't': 1, 'u': 1, 'v': 4, 'w': 4, 'x': 8, 'y': 4, 'z': 10
@@ -119,11 +118,15 @@ def display_hand(hand):
 
     hand: dictionary (string -> int)
     """
-    
+    i=0
+    print(end="( ")
     for letter in hand.keys():
         for j in range(hand[letter]):
-             print(letter, end=' ')      # print all on the same line
-    print()                              # print an empty line
+             print(letter, end='')      # print all on the same line
+             if i < (calculate_handlen(hand)-1):
+                 print(end=", ")
+                 i+=1
+    print(" )")                              # print an empty line
 
 #
 # Make sure you understand how this function works and what it does!
@@ -144,16 +147,17 @@ def deal_hand(n):
     """
     
     hand={}
-    num_vowels = int(math.ceil(n / 3))
-
+    num_vowels = int(math.ceil((n / 3)-1))
+    
     for i in range(num_vowels):
         x = random.choice(VOWELS)
         hand[x] = hand.get(x, 0) + 1
     
-    for i in range(num_vowels, n):    
+    for i in range(num_vowels, (n-1)):    
         x = random.choice(CONSONANTS)
         hand[x] = hand.get(x, 0) + 1
     
+    hand["*"] = hand.get("*", 0) + 1
     return hand
 
 #
@@ -228,6 +232,11 @@ def calculate_handlen(hand):
     hand: dictionary (string-> int)
     returns: integer
     """
+    length = 0
+    for value in hand.values():
+        length = length + value
+    return length
+
     
     pass  # TO DO... Remove this line when you implement this function
 
@@ -261,7 +270,7 @@ def play_hand(hand, word_list):
       returns: the total score for the hand
       
     """
-    
+
     # BEGIN PSEUDOCODE <-- Remove this comment when you implement this function
     # Keep track of the total score
     
@@ -294,7 +303,26 @@ def play_hand(hand, word_list):
 
     # Return the total score as result of function
 
-
+    score = 0
+    while calculate_handlen(hand) > 0:
+        n = calculate_handlen(hand)
+        display_hand(hand)
+        escape = '!'            #doesn't seem to work for "!!" but does work for "!"
+        word = (input("Enter word, or '!' to indicate that you are finished: "))
+        print(word)
+        if word is escape :
+            print("Total score: ",score, "points")
+            return score
+        else:
+            if is_valid_word(word, hand, word_list):
+                score = score + get_word_score(word, n)
+                print(word, "earned ",get_word_score(word,n),", Running total this hand: ",score, "points")
+                hand = update_hand(hand, word)
+            else:
+                print("That is not a valid word. Please choose another word.")
+                hand = update_hand(hand, word)
+    print("Ran out of letters. Total score: ", score, "points")
+    return score
 
 #
 # Problem #6: Playing a game
@@ -327,9 +355,36 @@ def substitute_hand(hand, letter):
     letter: string
     returns: dictionary (string -> int)
     """
-    
-    pass  # TO DO... Remove this line when you implement this function
-       
+
+    #Ask user if they want to sub a letter in thier hand (user input)
+    #if letter is in hand 
+        #if letter is a vowel
+            #remove letter from list of vowels
+            #pick a letter from modified list of vowels randomly
+            #add this letter to hand a number of times equal to times sub letter is in hand 
+        #if letter is a const
+            #do same but for constanants
+        #do nothing if letter not in hand
+
+    vowels_mod = "aeiou"
+    constants_mod = "bcdfghjklmnpqrstvwxyz"
+    if letter in hand.keys():
+        if letter in vowels_mod:
+            for char in hand.keys():
+                vowels_mod = VOWELS.replace(char, "")
+            new_letter = random.choice(vowels_mod)
+            hand[new_letter] = hand.get(new_letter, 0) + hand[letter]
+
+        if letter in CONSONANTS:
+            for char in hand.keys():
+                vowels_mod = constants_mod.replace(char, "")
+            new_letter = random.choice(constants_mod)
+            hand[new_letter] = hand.get(new_letter, 0) + hand[letter]
+                
+        del hand[letter]
+    else:
+        print("Error substitute letter not in hand no changes made")
+    return  hand   
     
 def play_game(word_list):
     """
@@ -361,9 +416,29 @@ def play_game(word_list):
 
     word_list: list of lowercase strings
     """
-    
-    print("play_game not implemented.") # TO DO... Remove this line when you implement this function
-    
+    print(end="\033c")
+    score = 0
+    i = 0
+    n = int(input("Enter total number of hands you want to play: "))
+    while i < n:
+        print(end="\033c")
+        print("Hand number", (i+1), "of", n)
+        hand = deal_hand(HAND_SIZE)
+        print(end="Current hand: ")
+        display_hand(hand)
+        answer = input("Would you like to substitute a letter, y/n? ")
+        if answer is "y":
+            letter = (input("Which letter would you like to substitute? "))
+            substitute_hand(hand, letter)
+        score = score + play_hand(hand, word_list)
+
+        i +=1
+    print("Total score over all hands: ",score)
+        
+    #print("play_game not implemented.") # TO DO... Remove this line when you implement this function
+
+    #ask how many hands
+    #     
 
 
 #
@@ -373,5 +448,9 @@ def play_game(word_list):
 #
 if __name__ == '__main__':
     word_list = load_words()
+    #hand = {'c': 1, 'o': 1, '*': 1, 'w': 1, 's':1, 'z':1, 'y': 2}
+    #letter = "y"
+    #play_hand(hand, word_list)
+    #substitute_hand(hand, letter)
+    #print(hand)
     play_game(word_list)
-	

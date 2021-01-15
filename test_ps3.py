@@ -109,7 +109,6 @@ def test_is_valid_word(word_list):
     word = "hello"
     handOrig = get_frequency_dict(word)
     handCopy = handOrig.copy()
-
     if not is_valid_word(word, handCopy, word_list):
         print("FAILURE: test_is_valid_word()")
         print("\tExpected True, but got False for word: '" + word + "' and hand:", handOrig)
@@ -208,7 +207,7 @@ def test_wildcard(word_list):
     # test 2
     hand = {'n': 1, 'h': 1, '*': 1, 'y': 1, 'd':1, 'w':1, 'e': 2}
     word = "honey"
-
+    
     if is_valid_word(word, hand, word_list):
         print("FAILURE: test_is_valid_word() with wildcards")
         print("\tExpected False, but got True for word: '"+ word +"' and hand:", hand)
@@ -218,11 +217,10 @@ def test_wildcard(word_list):
     # test 3
     hand = {'n': 1, 'h': 1, '*': 1, 'y': 1, 'd':1, 'w':1, 'e': 2}
     word = "h*ney"
-
+    
     if not is_valid_word(word, hand, word_list):
         print("FAILURE: test_is_valid_word() with wildcards")
         print("\tExpected True, but got False for word: '"+ word +"' and hand:", hand)
-
         failure = True
 
     # test 4
@@ -257,9 +255,9 @@ print("----------------------------------------------------------------------")
 print("Testing update_hand...")
 test_update_hand()
 print("----------------------------------------------------------------------")
-#print("Testing is_valid_word...")
-#test_is_valid_word(word_list)
-#print("----------------------------------------------------------------------")
-#print("Testing wildcards...")
-#test_wildcard(word_list)
-#print("All done!")
+print("Testing is_valid_word...")
+test_is_valid_word(word_list)
+print("----------------------------------------------------------------------")
+print("Testing wildcards...")
+test_wildcard(word_list)
+print("All done!")
