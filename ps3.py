@@ -313,8 +313,7 @@ def play_hand(hand, word_list):
         escape = '!'            #doesn't seem to work for "!!" but does work for "!"
         print(end="Current hand: ")
         display_hand(hand)
-        print(calculate_handlen(hand))
-        word = (input("Enter word, or '!' to indicate that you are finished: "))
+                word = (input("Enter word, or '!' to indicate that you are finished: "))
         if word is escape :
             print("Total score: ",score, "points")
             return score
