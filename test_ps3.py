@@ -261,5 +261,3 @@ print("----------------------------------------------------------------------")
 print("Testing wildcards...")
 test_wildcard(word_list)
 print("All done!")
-
-
