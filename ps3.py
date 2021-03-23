@@ -10,7 +10,7 @@
 import math
 import random
 import string
-
+import time
 VOWELS = 'aeiou'
 CONSONANTS = 'bcdfghjklmnpqrstvwxyz'
 HAND_SIZE = 12
@@ -120,13 +120,14 @@ def display_hand(hand):
     """
     i=0
     print(end="( ")
+    display=[]
     for letter in hand.keys():
-        for j in range(hand[letter]):
-             print(letter, end='')      # print all on the same line
-             if i < (calculate_handlen(hand)-1):
-                 print(end=", ")
-                 i+=1
-    print(" )")                              # print an empty line
+        i=0
+
+        while i < hand[letter]:
+            display.append(letter)
+            i+=1
+    print(display)                              # print an empty line
 
 #
 # Make sure you understand how this function works and what it does!
@@ -183,8 +184,9 @@ def update_hand(hand, word):
     returns: dictionary (string -> int)
     """   
     handcopy = hand.copy()
+    word = str.lower(word)
     for char in word :
-        char = str.lower(char)
+        
         handcopy[char] = handcopy.get(char, 0) - 1
         if handcopy[char] is 0 :
             del(handcopy[char])
@@ -207,8 +209,9 @@ def is_valid_word(word, hand, word_list):
     """
     wildcard_pos = word.find("*")
     word = word.lower()
-    hand = update_hand(hand, word)
-    for value in hand.values():
+    hand_test = hand
+    hand_test = update_hand(hand, word)
+    for value in hand_test.values():
         if value < 0:
             return False
     if wildcard_pos > -1:
@@ -304,23 +307,28 @@ def play_hand(hand, word_list):
     # Return the total score as result of function
 
     score = 0
+    print(end="\033c")
     while calculate_handlen(hand) > 0:
         n = calculate_handlen(hand)
-        display_hand(hand)
         escape = '!'            #doesn't seem to work for "!!" but does work for "!"
-        word = (input("Enter word, or '!' to indicate that you are finished: "))
-        print(word)
+        print(end="Current hand: ")
+        display_hand(hand)
+                word = (input("Enter word, or '!' to indicate that you are finished: "))
         if word is escape :
             print("Total score: ",score, "points")
             return score
         else:
             if is_valid_word(word, hand, word_list):
                 score = score + get_word_score(word, n)
-                print(word, "earned ",get_word_score(word,n),", Running total this hand: ",score, "points")
+                print(word, "earned",get_word_score(word,n),"ponts, Running total this hand:",score,"points")
                 hand = update_hand(hand, word)
             else:
-                print("That is not a valid word. Please choose another word.")
+                print("That is not a valid word! You have lost all valid letters from your hand. Please choose another word.")
                 hand = update_hand(hand, word)
+                for key in word:
+                    if hand[key] < 0:
+                         del(hand[key])
+    
     print("Ran out of letters. Total score: ", score, "points")
     return score
 
@@ -420,17 +428,34 @@ def play_game(word_list):
     score = 0
     i = 0
     n = int(input("Enter total number of hands you want to play: "))
+    hand_state = 1            # 1 is a hand game, 0 is an invalid hand
     while i < n:
         print(end="\033c")
         print("Hand number", (i+1), "of", n)
-        hand = deal_hand(HAND_SIZE)
+        if hand_state is 1:
+            hand = deal_hand(HAND_SIZE)
         print(end="Current hand: ")
         display_hand(hand)
         answer = input("Would you like to substitute a letter, y/n? ")
+
         if answer is "y":
             letter = (input("Which letter would you like to substitute? "))
+            print(end="\033c")
             substitute_hand(hand, letter)
-        score = score + play_hand(hand, word_list)
+            print("Hand number", (i+1), "of", n)
+            hand_state = 1
+
+        if answer is "n":
+            hand_state = 1
+        
+        if not(answer is "y" or answer is "n"):
+            print("Not a vaild answer please try again")
+            time.sleep(2)
+            i=i-1
+            hand_state = 0
+
+        if hand_state is 1:
+            score = score + play_hand(hand, word_list)
 
         i +=1
     print("Total score over all hands: ",score)
